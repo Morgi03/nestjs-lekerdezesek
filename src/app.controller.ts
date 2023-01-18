@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -106,13 +107,16 @@ export class AppController {
   }
 
   @Get('/api/users/:id')
-  async usersApi(@Body() userdata: UserDataDto, @Param('id') id: number) {
+  async usersApi(@Param('id') id: number) {
     const [user] = await db.execute(
       'SELECT id, username FROM users WHERE id = ?',
       [id],
     );
-    return {
-      user: user,
-    };
+    return user[0];
+  }
+
+  @Delete('/api/delete/:id')
+  async deleteUserApi(@Param('id') id: number) {
+    await db.execute('DELETE FROM users WHERE id = ?', [id]);
   }
 }
